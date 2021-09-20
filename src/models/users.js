@@ -4,22 +4,24 @@ const userSchema = Schema({
   email:{
     type: String,
     required: [true, 'El nombre es obligatorio'],
-    unique: true
+    unique: true,
   },
   password:{
     type: String,
+    unique : true,
     required: [true, 'La contraseña es obligatoria']
   },
-  roles:{
-    admin : {
-      type: Boolean,
-      required: true,
-    },
-  },
+  roles:[{
+    ref : 'Role',
+    type: Schema.Types.ObjectId,
+  }],
   state: {
     type: Boolean,
-    default: true
+    default: true,
   }
-})
+}, {
+  timestamps: true,
+  versionKey: true,
+});
 
-module.exports = model('Users', userSchema);
+module.exports = model('User', userSchema);
