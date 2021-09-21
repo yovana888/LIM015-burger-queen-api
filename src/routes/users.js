@@ -1,5 +1,4 @@
 const { createUserAndRole } = require('../services/users');
-const bcrypt = require('bcrypt');
 
 const {
   requireAuth,

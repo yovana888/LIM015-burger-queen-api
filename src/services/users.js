@@ -1,6 +1,10 @@
+const config = require('../config');
 const User = require('../models/users');
 const Role = require('../models/roles');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const { secret } = config;
 
 module.exports.createUserAndRole = async (email, password, roles = {} ) => {
   const userFound = await User.findOne({email});
@@ -15,10 +19,10 @@ module.exports.createUserAndRole = async (email, password, roles = {} ) => {
   }   
 };
 
-module.exports.comparePassword = (password, userPassword) => {
-  return new Promise((resolve => {
-    bcrypt.compare(password, userPassword, (err, res) => {
-      resolve(res);
-    });
-  }))
-};
+module.exports.comparePassword = (password, userPassword) => new Promise(resolve => {
+  bcrypt.compare(password, userPassword, (err, res) => resolve(res));
+});
+
+module.exports.generateJWT = (id, email) => new Promise(resolve => {
+  jwt.sign({id, email}, secret, {expiresIn: '4h'}, (err, token) => resolve(token));
+});
