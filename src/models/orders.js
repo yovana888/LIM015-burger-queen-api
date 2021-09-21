@@ -33,7 +33,7 @@ const orderSchema = Schema(
       type: Date,
     }
     
-  }, { 
+  }, {
     timestamps: true,
     versionKey: true,
   });

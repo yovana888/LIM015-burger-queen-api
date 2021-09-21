@@ -7,6 +7,7 @@ const {
 
 const {
   getUsers,
+  createUser,
 } = require('../controller/users');
 
 const initAdminUser = (app, next) => {

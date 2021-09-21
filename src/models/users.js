@@ -1,6 +1,8 @@
-const {Schema, model} = require('mongoose');
+const {Schema, model, SchemaType} = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const userSchema = Schema({
+  _id: SchemaType.ObjectId,
   email:{
     type: String,
     required: [true, 'El nombre es obligatorio'],
@@ -14,14 +16,28 @@ const userSchema = Schema({
   roles:[{
     ref : 'Role',
     type: Schema.Types.ObjectId,
-  }],
-  state: {
-    type: Boolean,
-    default: true,
-  }
+  }]
 }, {
   timestamps: true,
   versionKey: true,
 });
 
+userSchema.pre('save', async () => {
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(this.password, salt);
+  userSchema.password = hash;
+})
+
+userSchema.methods.comparePassword = (password) => {
+  return new Promise ((resolve, reject) => {
+  bcrypt.compare(this.password, password, (err, isMatch) =>{
+    if(err){
+      reject(err)
+    } else {
+      resolve(isMatch);
+    }
+  })
+})
+  
+}
 module.exports = model('User', userSchema);

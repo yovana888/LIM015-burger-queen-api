@@ -1,20 +1,4 @@
-const jwt = require('jsonwebtoken');
-const config = require('../config');
-
-const { secret } = config;
-
-const generateJWT = (email) => new Promise((resolve, reject) => {
-  const payload = { email };
-  jwt.sign(payload, secret, {
-    expiresIn: '4h',
-  }, (err, token) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(token);
-    }
-  });
-});
+const { auth } = require('../controller/auth');
 
 /** @module auth */
 module.exports = (app, nextMain) => {
@@ -30,17 +14,7 @@ module.exports = (app, nextMain) => {
    * @code {400} si no se proveen `email` o `password` o ninguno de los dos
    * @auth No requiere autenticación
    */
-  app.post('/auth', async (req, resp, next) => {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return next(400);
-    }
-    // TODO: autenticar a la usuarix
-    const token = await generateJWT(email);
-    resp.json({ token, email });
-    next();
-  });
+  app.post('/auth', auth());
 
   return nextMain();
 };
