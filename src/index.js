@@ -1,8 +1,9 @@
+// require('dotenv').config();
 const app =  require('./app');
 const config = require('./config');
-require('./database');
 
 const { port } = config;
+require('./database');
 
 const main = async () => {
   await app.listen(port);

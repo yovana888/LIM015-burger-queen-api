@@ -24,16 +24,15 @@ module.exports.auth = async (req, resp, next) => {
         return next(400);
     }
     //si no existe el usuario
-    const userFound = await User.findOne({email: email});
-    if (!userFound) next(404);
-    
+    const userFound = await User.findOne({email});
+    if (!userFound) next(401);
+
     // se comparan las contraseñas
-    const comparePassword = await User.comparePassword(password)
-    if(!comparePassword) return next(401);
+    // const comparePassword = await User.comparePassword(password)
+    // if(!comparePassword) return next(401);
 
      // TODO: autenticar a la usuarix
-    const token = await generateJWT(User_id, email);
+    const token = await generateJWT(userFound._id, userFound.email);
     resp.json({token});
     next();
 }
-

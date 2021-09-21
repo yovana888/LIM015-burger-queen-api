@@ -4,8 +4,15 @@ const roleSchema = Schema(
   {
     name: {
       type: String,
+      index: true,
+      required: false,
+    },
+    admin: {
+      type: Boolean,
+      // default: true,
     },
   }, {
+    timestamps: true,
     versionKey: false,
   }
 );

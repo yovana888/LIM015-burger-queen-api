@@ -8,7 +8,7 @@ const root = (app, next) => {
   app.get('/', (req, res) => {
     res.json({ name: pkg.name, version: pkg.version })
   });
-  app.all('*', (req, resp, nextAll) => nextAll(404));
+  app.all('*', (req, res, nextAll) => nextAll(404));
   return next();
 };
 
