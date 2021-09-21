@@ -14,7 +14,7 @@ module.exports = (app, nextMain) => {
    * @code {400} si no se proveen `email` o `password` o ninguno de los dos
    * @auth No requiere autenticación
    */
-  app.post('/auth', auth());
+  app.post('/auth', auth);
 
   return nextMain();
 };

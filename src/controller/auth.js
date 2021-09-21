@@ -25,16 +25,12 @@ module.exports.auth = async (req, resp, next) => {
     }
     //si no existe el usuario
     const userFound = await User.findOne({email: email});
-    if (!userFound) {
-        console.log(`no existe un usuario con email ${email}`);
-        return next(404);
-    } 
+    if (!userFound) next(404);
+    
     // se comparan las contraseñas
     const comparePassword = await User.comparePassword(password)
-    if(!comparePassword) {
-        console.log('las contraseñas no coinciden');
-        return next(401);
-    }
+    if(!comparePassword) return next(401);
+
      // TODO: autenticar a la usuarix
     const token = await generateJWT(User_id, email);
     resp.json({token});

@@ -2,7 +2,6 @@ const {Schema, model, SchemaType} = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const userSchema = Schema({
-  _id: SchemaType.ObjectId,
   email:{
     type: String,
     required: [true, 'El nombre es obligatorio'],
@@ -19,7 +18,7 @@ const userSchema = Schema({
   }]
 }, {
   timestamps: true,
-  versionKey: true,
+  versionKey: false,
 });
 
 userSchema.pre('save', async () => {
