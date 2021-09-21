@@ -1,6 +1,7 @@
 const config = require('../config');
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
+const { comparePassword } = require('../services/users');
 
 const { secret } = config;
 
@@ -28,11 +29,11 @@ module.exports.auth = async (req, resp, next) => {
     if (!userFound) next(401);
 
     // se comparan las contraseñas
-    // const comparePassword = await User.comparePassword(password)
-    // if(!comparePassword) return next(401);
+    const existsPassword = await comparePassword(password, userFound.password)
+    if(!existsPassword) return next(401);
 
      // TODO: autenticar a la usuarix
     const token = await generateJWT(userFound._id, userFound.email);
     resp.json({token});
     next();
-}
+};

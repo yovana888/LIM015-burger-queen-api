@@ -21,16 +21,4 @@ const userSchema = Schema({
   versionKey: false,
 });
 
-// userSchema.methods.comparePassword = (password) => {
-//   return new Promise ((resolve, reject) => {
-  //   bcrypt.compare(this.password, password, (err, isMatch) =>{
-  //     if(err){
-  //       reject(err)
-  //     } else {
-  //       resolve(isMatch);
-  //     }
-  //   });
-//  });
-// }
-
 module.exports = model('User', userSchema);

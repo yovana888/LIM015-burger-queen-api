@@ -10,7 +10,4 @@ mongoose.connect(dbUrl, {
 })
   .then(() => console.log('Base de datos conectada online'))
   .catch((err) => console.error(err));
-
-// mongoose.connection.once('open', () => {
-//   console.log('DB is connected');
-// });
+  
