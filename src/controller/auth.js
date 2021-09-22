@@ -16,7 +16,7 @@ module.exports.auth = async (req, resp, next) => {
     if(!existsPassword) return next(401);
 
     // TODO: autenticar a la usuarix
-    const token = await generateJWT(userFound._id, userFound.password); 
+    const token = await generateJWT(userFound._id, userFound.email); 
     resp.json({token});
     next();
 };
