@@ -27,7 +27,7 @@ module.exports.generateJWT = (id, email) => new Promise(resolve => {
   jwt.sign({id, email}, secret, {expiresIn: '4h'}, (err, token) => resolve(token));
 });
 
-module.exports.adminValue = (id) => new Promise( resolve => {
+module.exports.getRoles = (id) => new Promise( resolve => {
   User.findOne({_id: id}).populate('roles').exec( (err, user) => {
     console.log(`roles : ${user.roles}`);
     resolve(user.roles);
