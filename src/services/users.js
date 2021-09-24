@@ -6,17 +6,14 @@ const jwt = require('jsonwebtoken');
 
 const { secret } = config;
 
-module.exports.createUserAndRole = async (email, password, roles = {}, next) => {
-  const userFound = await User.findOne({email});
-  if (!userFound) { //sólo si no existe el usuario
-    const role = await new Role(roles).save();
-    const user = new User({
-      email,
-      password: bcrypt.hashSync(password, 10),
-      roles: role._id,
-    });
-    return user.save();
-  }
+module.exports.createUserAndRole = async (email, password, roles = {}) => {
+  const role = await new Role(roles).save();
+  const user = new User({
+    email,
+    password: bcrypt.hashSync(password, 10),
+    roles: role._id,
+  });
+  return user.save();
 };
 
 module.exports.comparePassword = (password, userPassword) => new Promise(resolve => {
@@ -27,7 +24,7 @@ module.exports.generateJWT = (id, email) => new Promise(resolve => {
   jwt.sign({id, email}, secret, {expiresIn: '4h'}, (err, token) => resolve(token));
 });
 
-module.exports.getRoles = (id) => new Promise( resolve => {
+module.exports.getRolesById = (id) => new Promise( resolve => {
   User.findOne({_id: id}).populate('roles').exec( (err, user) => {
     console.log(`roles : ${user.roles}`);
     resolve(user.roles);

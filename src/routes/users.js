@@ -1,4 +1,5 @@
 const { createUserAndRole } = require('../services/users');
+const User = require('../models/users');
 
 const {
   requireAuth,
@@ -7,17 +8,19 @@ const {
 
 const {
   getUsers,
+  getUserById,
   createUser,
 } = require('../controller/users');
 
 const initAdminUser = async (app, next) => {
   const { adminEmail, adminPassword } = app.get('config');
-  if (!adminEmail || !adminPassword) {
-    return next(400);
-  }
+  if (!adminEmail || !adminPassword) return next(400);
   // TODO: crear usuaria admin
-  await createUserAndRole( adminEmail, adminPassword, {admin: true});
-  next();
+  const userFound = await User.findOne({adminEmail});
+  if(!userFound) {
+    await createUserAndRole( adminEmail, adminPassword, {admin: true});
+    next();
+  }
 };
 
 /*
@@ -87,8 +90,7 @@ module.exports = (app, next) => {
    * @code {403} si no es ni admin o la misma usuaria
    * @code {404} si la usuaria solicitada no existe
    */
-  app.get('/users/:uid', requireAuth, (req, resp) => {
-  });
+  app.get('/users/:uid', requireAuth, getUserById);
 
   /**
    * @name POST /users

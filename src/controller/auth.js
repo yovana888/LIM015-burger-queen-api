@@ -2,7 +2,7 @@ const User = require('../models/users');
 const { comparePassword, generateJWT } = require('../services/users');
 
 // Autenticar
-module.exports.auth = async (req, resp, next) => {
+module.exports.auth = async (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password) {
         return next(400);
@@ -17,6 +17,6 @@ module.exports.auth = async (req, resp, next) => {
 
     // TODO: autenticar a la usuarix
     const token = await generateJWT(userFound._id, userFound.email); 
-    resp.json({token});
+    res.json({token});
     next();
 };
