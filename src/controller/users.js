@@ -3,14 +3,14 @@ const User = require('../models/users');
 
 module.exports = {
   getUsers: async (req, res, next) => {
-    const {page = 1, limit = 10} = req.query;
-    const allUsers = await User.find(); // devuelve todos los usuarios
+    // const {page = 1, limit = 10} = req.query;
+    const allUsers = await User.find({}); // devuelve todos los usuarios
     const newArrayUsers = []; // array dónde se almacenará User con sus respectivos roles
     allUsers.forEach( async e => {
       e.roles = await getRolesById(e._id);
       newArrayUsers.push(e);
     });
-    res.json(newArrayUsers);
+    res.json(allUsers);
     next();
   },
   getUserById: async (req, res) => {

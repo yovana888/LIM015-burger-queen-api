@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/users');
 const { getRolesById } =  require('../services/users');
 
-module.exports = (secret) => (req, res, next) => {
+module.exports = (secret) => (req, resp, next) => {
   const { authorization } = req.headers;
   if (!authorization) {
     return next();
@@ -10,7 +10,7 @@ module.exports = (secret) => (req, res, next) => {
   const [type, token] = authorization.split(' ');
 
   if (type.toLowerCase() !== 'bearer') {
-    return next();
+    return next(401);
   }
   jwt.verify(token, secret, async (err, decodedToken) => {
     if (err) {
@@ -19,7 +19,7 @@ module.exports = (secret) => (req, res, next) => {
     // TODO: Verificar identidad del usuario usando `decodeToken.uid`
     const userFound = await User.findById( decodedToken.id );
     if(!userFound) return next(403);
-    const roles = await getRolesById (decodedToken.id);
+    const roles = await getRolesById(decodedToken.id);
     req.userToken = { ...{ admin: roles.admin }, ...decodedToken};
     next();
   });
@@ -39,13 +39,13 @@ module.exports.isAdmin = (req) => (
     : false
 );
 
-module.exports.requireAuth = (req, res, next) => (
+module.exports.requireAuth = (req, resp, next) => (
   (!module.exports.isAuthenticated(req))
     ? next(401)
     : next()
 );
 
-module.exports.requireAdmin = (req, res, next) => (
+module.exports.requireAdmin = (req, resp, next) => (
   // eslint-disable-next-line no-nested-ternary
   (!module.exports.isAuthenticated(req))
     ? next(401)
