@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "license": "MIT",
+  "author": {
+    "name": "Alisson Cruz Holguin"
+  },
   "engines": {
     "node": ">=10"
   },
@@ -33,7 +36,6 @@
     "jsdoc": "^3.6.6",
     "jsdoc-http-plugin": "^0.3.2",
     "node-fetch": "^2.6.1",
-    "nodemon": "^2.0.12",
     "tree-kill": "^1.2.2"
   }
 }
