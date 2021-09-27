@@ -23,9 +23,9 @@ module.exports.comparePassword = (password, userPassword) =>
     bcrypt.compare(password, userPassword, (err, res) => resolve(res));
   });
 
-module.exports.generateJWT = (id, email) =>
+module.exports.generateJWT = id =>
   new Promise(resolve => {
-    jwt.sign({ id, email }, secret, { expiresIn: "4h" }, (err, token) => resolve(token));
+    jwt.sign({ id }, secret, { expiresIn: "4h" }, (err, token) => resolve(token));
   });
 
 module.exports.getUsers = async (page, limit) => {
@@ -39,10 +39,19 @@ module.exports.getUserByEmail = async email => {
   return await User.findOne({ email }).populate("roles");
 };
 
-module.exports.getUserById = async uid => {
+module.exports.getUserByIdOrEmail = async uid => {
   if (mongoose.Types.ObjectId.isValid(uid)) {
     return await User.findById(uid).populate("roles");
   }
-  // return await User.findOne({ email: uid }).populate("roles");
   return await module.exports.getUserByEmail(uid);
+};
+
+module.exports.updateSingle = async (_id, email, password) => {
+  return await User.findByIdAndUpdate(_id, { email, password: bcrypt.hashSync(password, 10) }, { new: true }).populate(
+    "roles"
+  );
+};
+
+module.exports.deleteSingle = async _id => {
+  return await User.deleteOne({ _id });
 };
