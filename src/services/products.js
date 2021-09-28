@@ -1,12 +1,10 @@
 const config = require("../config");
 const Product = require("../models/products");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 
 const { secret } = config;
 
-module.exports.createNewProduct = async (name, price, image, type) => {
+module.exports.createProduct = async (name, price, image, type) => {
   const product = new Product({
     name,
     price,
@@ -26,7 +24,7 @@ module.exports.getProductByName = async name => {
   return await Product.findOne({ name });
 };
 
-module.exports.getProductId = async id => {
+module.exports.getProductById = async id => {
   if (mongoose.Types.ObjectId.isValid(id)) {
     return await Product.findById(id);
   }
