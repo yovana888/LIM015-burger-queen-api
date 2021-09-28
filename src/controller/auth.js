@@ -1,7 +1,7 @@
 const { comparePassword, generateJWT, getUserByEmail } = require("../services/users");
 
 // Autenticar
-module.exports.auth = async (req, res, next) => {
+module.exports.auth = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ message: "Email or password not found" });
 
@@ -14,7 +14,6 @@ module.exports.auth = async (req, res, next) => {
   if (!existsPassword) return res.status(401).json({ message: "Invalid password" });
 
   // TODO: autenticar a la usuarix
-  const token = await generateJWT(userFound._id, userFound.email);
+  const token = await generateJWT(userFound._id);
   res.json({ token });
-  next();
 };
