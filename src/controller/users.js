@@ -46,7 +46,7 @@ module.exports = {
     if (roles && !admin) {
       return res.status(403).json({ message: "Admin permission is required to modified roles value" });
     }
-    const userUpdate = await updateSingle(user._id, email, password);
+    const userUpdate = await updateSingle(user._id, user.roles._id, email, password, roles);
     res.json(userUpdate);
   },
   deleteUser: async (req, res) => {
@@ -55,7 +55,7 @@ module.exports = {
     if (req.userToken.id !== user._id.toString() && !req.userToken.admin) {
       return res.status(403).json({ message: "Admin permission is required or be the same user that wants delete" });
     }
-    const deletedCount = await deleteSingle(user._id);
+    const deletedCount = await deleteSingle(user._id, user.roles._id);
     res.json({ ...user, ...deletedCount });
   },
 };

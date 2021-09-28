@@ -46,12 +46,14 @@ module.exports.getUserByIdOrEmail = async uid => {
   return await module.exports.getUserByEmail(uid);
 };
 
-module.exports.updateSingle = async (_id, email, password) => {
+module.exports.updateSingle = async (_id, rolesId, email, password, roles) => {
+  await Role.findByIdAndUpdate(rolesId, roles, { new: true });
   return await User.findByIdAndUpdate(_id, { email, password: bcrypt.hashSync(password, 10) }, { new: true }).populate(
     "roles"
   );
 };
 
-module.exports.deleteSingle = async _id => {
+module.exports.deleteSingle = async (_id, rolesId) => {
+  await Role.deleteOne({ _id: rolesId });
   return await User.deleteOne({ _id });
 };
