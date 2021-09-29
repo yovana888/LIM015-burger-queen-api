@@ -1,8 +1,5 @@
-const config = require("../config");
 const Product = require("../models/products");
 const mongoose = require("mongoose");
-
-const { secret } = config;
 
 module.exports.createProduct = async (name, price, image, type) => {
   const product = new Product({
@@ -25,9 +22,7 @@ module.exports.getProductByName = async name => {
 };
 
 module.exports.getProductById = async id => {
-  if (mongoose.Types.ObjectId.isValid(id)) {
-    return await Product.findById(id);
-  }
+  if (mongoose.Types.ObjectId.isValid(id)) return await Product.findById(id);
 };
 
 module.exports.updateSingle = async (_id, body) => {

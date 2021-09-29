@@ -39,10 +39,13 @@ module.exports = {
     const product = await getProductById(req.params.productId);
     if (!product) return res.status(404).json({ message: `Product: ${req.params.productId} does not exists` });
     // if (!req.userToken.admin) return res.status(403).json({ message: "Admin permission is required" });
-    const body = req.body;
-    if (!body) return res.status(400).json({ message: "Properties not found" });
-    const productUpdated = await updateSingle(product._id, body);
-    res.json(productUpdated);
+    const { name, price, imagen, type } = req.body;
+    if (name || price || imagen || type) {
+      const productUpdated = await updateSingle(product._id, req.body);
+      res.json(productUpdated);
+    } else {
+      return res.status(400).json({ message: "Properties not found" });
+    }
   },
   deleteProduct: async (req, res) => {
     const product = await getProductById(req.params.productId);
