@@ -1,7 +1,7 @@
 const {
-  createNewProduct,
+  createProduct,
   getProducts,
-  getProductId,
+  getProductById,
   getProductByName,
   updateSingle,
   deleteSingle,
@@ -23,7 +23,7 @@ module.exports = {
     res.json(products);
   },
   getProductById: async (req, res) => {
-    const product = await getProductId(req.params.productId);
+    const product = await getProductById(req.params.productId);
     if (!product) return res.status(404).json({ message: `Product: ${req.params.productId} does not exists` });
     res.json(product);
   },
@@ -32,20 +32,23 @@ module.exports = {
     if (!name || !price) return res.status(400).json({ message: "Name or Price not found" });
     const productFound = await getProductByName(name);
     if (productFound) return res.status(403).json({ message: `Product: ${name} already exists` });
-    const product = await createNewProduct(name, price, image, type);
+    const product = await createProduct(name, price, image, type);
     res.json(product);
   },
   putProduct: async (req, res) => {
-    const product = await getProductId(req.params.productId);
+    const product = await getProductById(req.params.productId);
     if (!product) return res.status(404).json({ message: `Product: ${req.params.productId} does not exists` });
     // if (!req.userToken.admin) return res.status(403).json({ message: "Admin permission is required" });
-    const body = req.body;
-    if (!body) return res.status(400).json({ message: "Properties not found" });
-    const productUpdated = await updateSingle(product._id, body);
-    res.json(productUpdated);
+    const { name, price, imagen, type } = req.body;
+    if (name || price || imagen || type) {
+      const productUpdated = await updateSingle(product._id, req.body);
+      res.json(productUpdated);
+    } else {
+      return res.status(400).json({ message: "Properties not found" });
+    }
   },
   deleteProduct: async (req, res) => {
-    const product = await getProductId(req.params.productId);
+    const product = await getProductById(req.params.productId);
     if (!product) return res.status(404).json({ message: `Product: ${req.params.productId} does not exists` });
     // if (!req.userToken.admin) return res.status(403).json({ message: "Admin permission is required" });
     await deleteSingle(product._id);
