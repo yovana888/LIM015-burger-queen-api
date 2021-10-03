@@ -4,6 +4,7 @@ const {
 
 describe('getUsers', () => {
   it('should get users collection', (done) => {
+    getUsers();
     done();
   });
 });

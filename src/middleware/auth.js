@@ -1,33 +1,41 @@
-const jwt = require("jsonwebtoken");
-const { getUserByIdOrEmail } = require("../services/users");
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-nested-ternary */
+const jwt = require('jsonwebtoken');
+const { getUserByIdOrEmail } = require('../services/users');
 
-module.exports = secret => (req, resp, next) => {
+module.exports = (secret) => (req, resp, next) => {
   const { authorization } = req.headers;
   if (!authorization) return next();
+  const [type, token] = authorization.split(' ');
+  if (type.toLowerCase() !== 'bearer') return next();
 
-  const [type, token] = authorization.split(" ");
-  if (type.toLowerCase() !== "bearer") return next(401);
-
-  jwt.verify(token, secret, async (err, decodedToken) => {
-    if (err) return next(401);
+  jwt.verify(token, secret, (err, decodedToken) => {
+    if (err) return next(403);
     // TODO: Verificar identidad del usuario usando `decodeToken.uid`
-    const userFound = await getUserByIdOrEmail(decodedToken.id);
-    if (!userFound) return next(403);
-    req.userToken = { ...{ admin: userFound.roles.admin }, ...decodedToken };
-    next();
+    getUserByIdOrEmail(decodedToken.id)
+      .then((userFound) => {
+        if (!userFound) return resp.status(400).json({ message: 'user not found' });
+        req.userToken = decodedToken;
+        return next();
+      })
+      .catch(() => next(403));
   });
 };
+// TODO: decidir por la informacion del request si la usuaria esta autenticada
+module.exports.isAuthenticated = (req) => (!!(req.userToken));
 
-module.exports.isAuthenticated = req =>
-  // TODO: decidir por la informacion del request si la usuaria esta autenticada
-  req.userToken ? true : false;
-
-module.exports.isAdmin = req =>
+module.exports.isAdmin = async (req) => {
   // TODO: decidir por la informacion del request si la usuaria es admin
-  req.userToken.admin ? true : false;
+  const user = await getUserByIdOrEmail(req.userToken.id);
+  return user.roles.admin;
+};
 
-module.exports.requireAuth = (req, resp, next) => (!module.exports.isAuthenticated(req) ? next(403) : next());
+module.exports.requireAuth = (req, resp, next) => (!module.exports.isAuthenticated(req)
+  ? next(401)
+  : next());
 
-module.exports.requireAdmin = (req, resp, next) =>
-  // eslint-disable-next-line no-nested-ternary
-  !module.exports.isAuthenticated(req) ? next(401) : !module.exports.isAdmin(req) ? next(403) : next();
+module.exports.requireAdmin = async (req, resp, next) => {
+  if (!module.exports.isAuthenticated(req)) return next(401);
+  if (!await module.exports.isAdmin(req)) return next(403);
+  return next();
+};

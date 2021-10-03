@@ -1,11 +1,10 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 
 const productSchema = Schema(
   {
     name: {
       type: String,
       required: true,
-      unique: true,
     },
     price: {
       type: Number,
@@ -21,9 +20,9 @@ const productSchema = Schema(
     },
   },
   {
-    timestamps: { createdAt: "dateEntry", updatedAt: "updatedAt" },
+    timestamps: { createdAt: 'dateEntry', updatedAt: 'updatedAt' },
     versionKey: false,
-  }
+  },
 );
 
-module.exports = model("Product", productSchema);
+module.exports = model('Product', productSchema);

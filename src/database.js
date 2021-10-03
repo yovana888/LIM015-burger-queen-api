@@ -8,6 +8,5 @@ mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-  .then(() => console.log('Base de datos conectada online'))
+  .then(() => console.info('Base de datos conectada online'))
   .catch((err) => console.error(err));
-  

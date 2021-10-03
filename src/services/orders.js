@@ -1,39 +1,38 @@
-const Product = require("../models/products");
-const Order = require("../models/orders");
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const Order = require('../models/orders');
 
 module.exports.createOrder = async (userId, client, products) => {
   const arrayOfProducts = [];
-  await products.forEach(p => {
+  await products.forEach((p) => {
     arrayOfProducts.push({ qty: p.qty, productId: mongoose.Types.ObjectId(p.productId) });
   });
   const order = new Order({
     userId,
-    client: client ? client : "",
+    client: client || '',
     products: arrayOfProducts,
   });
-  order.save();
-  return order.populate("products.productId");
+  await order.save();
+  return order.populate('products.productId');
 };
 
-module.exports.getOrders = async (page, limit) => {
-  return await Order.find({})
-    .populate("products.productId")
-    .skip((page - 1) * limit)
-    .limit(limit);
+module.exports.getOrdersDb = async (page, limit) => {
+  const orders = await Order.find({}).populate('products.productId').skip((page - 1) * limit).limit(limit);
+  return orders;
 };
 
-module.exports.getOrderById = async id => {
+module.exports.getOrderById = async (id) => {
   if (mongoose.Types.ObjectId.isValid(id)) {
-    return await Order.findById(id).populate("products.productId");
+    const order = await Order.findById(id).populate('products.productId');
+    return order;
   }
 };
 
 module.exports.updateSingle = async (_id, body) => {
-  return await Order.findByIdAndUpdate(_id, body, { new: true }).populate("products.productId");
+  const orderUpdated = await Order.findByIdAndUpdate(_id, body, { new: true }).populate('products.productId');
+  return orderUpdated;
 };
 
-module.exports.deleteSingle = async _id => {
+module.exports.deleteSingle = async (_id) => {
   const deletedInfo = await Order.deleteOne({ _id });
   return deletedInfo.deletedCount;
 };

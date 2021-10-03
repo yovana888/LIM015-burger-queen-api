@@ -40,7 +40,7 @@ describe('POST /orders', () => {
       })
       .then(([product, user]) => fetchAsTestUser('/orders', {
         method: 'POST',
-        body: { products: [{ productId: product._id, qty: 5, client: 'client' }], userId: user._id },
+        body: { products: [{ productId: product._id, qty: 5 }], client: 'client', userId: user._id },
       }))
       .then((resp) => {
         expect(resp.status).toBe(200);
@@ -52,8 +52,8 @@ describe('POST /orders', () => {
         expect(typeof json.dateEntry).toBe('string');
         expect(Array.isArray(json.products)).toBe(true);
         expect(json.products.length).toBe(1);
-        expect(json.products[0].product.name).toBe('Test');
-        expect(json.products[0].product.price).toBe(10);
+        expect(json.products[0].productId.name).toBe('Test');
+        expect(json.products[0].productId.price).toBe(10);
       })
   ));
 
@@ -83,8 +83,8 @@ describe('POST /orders', () => {
         expect(typeof json.dateEntry).toBe('string');
         expect(Array.isArray(json.products)).toBe(true);
         expect(json.products.length).toBe(1);
-        expect(json.products[0].product.name).toBe('Test');
-        expect(json.products[0].product.price).toBe(25);
+        expect(json.products[0].productId.name).toBe('Test');
+        expect(json.products[0].productId.price).toBe(25);
       })
   ));
 });
@@ -227,8 +227,8 @@ describe('GET /orders/:orderId', () => {
       })
       .then((json) => {
         expect(json.products.length).toBe(1);
-        expect(json.products[0].product.name).toBe('Test');
-        expect(json.products[0].product.price).toBe(99);
+        expect(json.products[0].productId.name).toBe('Test');
+        expect(json.products[0].productId.price).toBe(99);
       })
   ));
 
@@ -260,8 +260,8 @@ describe('GET /orders/:orderId', () => {
       })
       .then((json) => {
         expect(json.products.length).toBe(1);
-        expect(json.products[0].product.name).toBe('Test');
-        expect(json.products[0].product.price).toBe(10);
+        expect(json.products[0].productId.name).toBe('Test');
+        expect(json.products[0].productId.price).toBe(10);
       })
   ));
 });

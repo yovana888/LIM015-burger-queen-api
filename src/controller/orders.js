@@ -1,21 +1,23 @@
-const { createOrder, getOrders, getOrderById, updateSingle, deleteSingle } = require("../services/orders");
+require('../middleware/auth');
+const {
+  createOrder, getOrdersDb, getOrderById, updateSingle, deleteSingle,
+} = require('../services/orders');
 
-const { getProductById } = require("../services/products");
+const { getProductById } = require('../services/products');
+const { convertToLinks } = require('../utils/util');
 
 module.exports = {
   getOrders: async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
-    const host = req.headers.host;
-    const totalPages = Math.ceil((await getOrders(1, 0)).length / limit);
-    const orders = await getOrders(Number(page), Number(limit));
-    const link = {
-      first: page === 1 ? "" : `http://${host}/orders?page=1`,
-      next: page === totalPages ? "" : `http://${host}/orders?page=${Number(page) + 1}`,
-      prev: page === 1 ? "" : `http://${host}/orders?page=${Number(page) - 1}`,
-      last: page === totalPages ? "" : `http://${host}/orders?page=${totalPages}`,
-    };
-    res.set("Link", JSON.stringify(link));
-    res.json(orders);
+    const { protocol, host } = req.headers;
+    const orders = await getOrdersDb(Number(page), Number(limit));
+    if (orders) {
+      const totalPages = Math.ceil((await getOrdersDb(1, 0)).length / limit);
+      const link = convertToLinks(protocol, host, 'orders', limit, page, totalPages);
+      res.set('Link', JSON.stringify(link));
+      return res.json(orders);
+    }
+    return res.json('Database has not orders');
   },
   getOrderById: async (req, res) => {
     const order = await getOrderById(req.params.orderId);
@@ -23,44 +25,51 @@ module.exports = {
     res.json(order);
   },
   createOrder: async (req, res) => {
-    const { userId, client, products } = req.body;
+    const {
+      userId, client, products, status,
+    } = req.body;
     if (userId && products && products.length !== 0) {
-      let message = "";
-      await products.forEach(async p => {
+      let message = '';
+      await products.forEach(async (p) => {
         const productFound = await getProductById(p.productId);
-        if (!productFound) return (message = `Product con id: ${p.productId} does not exists`);
+        if (!productFound) {
+          message = `Product con id: ${p.productId} does not exists`;
+        }
       });
+      if (status && !(['pending', 'preparing', 'canceled', 'delivering', 'delivered'].includes(status))) {
+        return res.status(400).json({ message: 'Invalid status value' });
+      }
       if (message.length !== 0) return res.status(404).json({ message });
       const order = await createOrder(userId, client, products);
-      res.json(order);
-    } else {
-      return res.status(400).json({ message: "userId or Products not found" });
+      return res.json(order);
     }
+    return res.status(400).json({ message: 'userId or Products not found' });
   },
 
   putOrder: async (req, res) => {
     const order = await getOrderById(req.params.orderId);
     if (!order) return res.status(404).json({ message: `Order con id: ${req.params.orderId} does not exists` });
-    const { userId, client, products, status } = req.body;
+    const {
+      userId, client, products, status,
+    } = req.body;
     if (userId || client || products || status) {
-      let message = "";
+      let message = '';
+      if (status && !(['pending', 'preparing', 'canceled', 'delivering', 'delivered'].includes(status))) {
+        return res.status(400).json({ message: 'Invalid status value' });
+      }
       if (products && products.length !== 0) {
-        await products.forEach(async p => {
+        await products.forEach(async (p) => {
           const productFound = await getProductById(p.productId);
           if (!productFound) {
-            return (message = `Product con id: ${p.productId} does not exists`);
+            message = `Product con id: ${p.productId} does not exists`;
           }
         });
       }
       if (message.length !== 0) return res.status(404).json({ message });
-      if (status && !["pending", "canceled", "delivering", "delivered"].includes(status)) {
-        return res.status(400).json({ message: "Invalid status value" });
-      }
       const orderUpdated = await updateSingle(order._id, req.body);
-      res.json(orderUpdated);
-    } else {
-      return res.status(400).json({ message: "Properties not found" });
+      return res.json(orderUpdated);
     }
+    return res.status(400).json({ message: 'Properties not found' });
   },
   deleteOrder: async (req, res) => {
     const order = await getOrderById(req.params.orderId);

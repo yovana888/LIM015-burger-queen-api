@@ -1,35 +1,40 @@
-const Product = require("../models/products");
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const Product = require('../models/products');
 
 module.exports.createProduct = async (name, price, image, type) => {
   const product = new Product({
     name,
     price,
-    image: image ? image : "",
-    type: type ? type : "",
+    image: image || '',
+    type: type || '',
   });
-  return await product.save();
+  const prod = await product.save();
+  return prod;
 };
 
 module.exports.getProducts = async (page, limit) => {
-  return await Product.find({})
-    .skip((page - 1) * limit)
-    .limit(limit);
+  const products = await Product.find({}).skip((page - 1) * limit).limit(limit);
+  return products;
 };
 
-module.exports.getProductByName = async name => {
-  return await Product.findOne({ name });
+module.exports.getProductByName = async (name) => {
+  const product = await Product.findOne({ name });
+  return product;
 };
 
-module.exports.getProductById = async id => {
-  if (mongoose.Types.ObjectId.isValid(id)) return await Product.findById(id);
+module.exports.getProductById = async (id) => {
+  if (mongoose.Types.ObjectId.isValid(id)) {
+    const product = await Product.findById(id);
+    return product;
+  }
 };
 
 module.exports.updateSingle = async (_id, body) => {
-  return await Product.findByIdAndUpdate(_id, body, { new: true });
+  const product = await Product.findByIdAndUpdate(_id, body, { new: true });
+  return product;
 };
 
-module.exports.deleteSingle = async _id => {
+module.exports.deleteSingle = async (_id) => {
   const deletedInfo = await Product.deleteOne({ _id });
   return deletedInfo.deletedCount;
 };
