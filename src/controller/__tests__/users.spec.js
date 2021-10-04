@@ -158,6 +158,7 @@ describe('GET/Users', () => {
     });
   });
 });
+
 describe('GET/Users:uid', () => {
   it('should return a user with email', (done) => {
     request.post('/auth').send(ron).then((response) => {

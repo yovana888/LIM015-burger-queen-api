@@ -22,7 +22,7 @@ module.exports = {
   getOrderById: async (req, res) => {
     const order = await getOrderById(req.params.orderId);
     if (!order) return res.status(404).json({ message: `Order: ${req.params.orderId} does not exists` });
-    res.json(order);
+    return res.json(order);
   },
   createOrder: async (req, res) => {
     const {
@@ -49,12 +49,10 @@ module.exports = {
   putOrder: async (req, res) => {
     const order = await getOrderById(req.params.orderId);
     if (!order) return res.status(404).json({ message: `Order con id: ${req.params.orderId} does not exists` });
-    const {
-      userId, client, products, status,
-    } = req.body;
-    if (userId || client || products || status) {
+    const { products, status } = req.body;
+    if (Object.keys(req.body).length !== 0) {
       let message = '';
-      if (status && !(['pending', 'preparing', 'canceled', 'delivering', 'delivered'].includes(status))) {
+      if (status && !['pending', 'preparing', 'canceled', 'delivering', 'delivered'].includes(status)) {
         return res.status(400).json({ message: 'Invalid status value' });
       }
       if (products && products.length !== 0) {
