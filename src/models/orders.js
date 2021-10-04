@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 
 const orderSchema = Schema(
   {
@@ -8,7 +8,7 @@ const orderSchema = Schema(
     },
     client: {
       type: String,
-      required: true,
+      required: false,
     },
     products: [
       {
@@ -17,7 +17,7 @@ const orderSchema = Schema(
           default: 1,
         },
         productId: {
-          ref: "Product",
+          ref: 'Product',
           type: Schema.Types.ObjectId,
           required: true,
         },
@@ -25,13 +25,13 @@ const orderSchema = Schema(
     ],
     status: {
       type: String,
-      default: "pending",
+      default: 'pending',
     },
   },
   {
-    timestamps: { createdAt: "dateEntry", updatedAt: "dateProcessed" },
+    timestamps: { createdAt: 'dateEntry', updatedAt: 'dateProcessed' },
     versionKey: false,
-  }
+  },
 );
 
-module.exports = model("Order", orderSchema);
+module.exports = model('Order', orderSchema);

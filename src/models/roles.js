@@ -14,7 +14,7 @@ const roleSchema = Schema(
   }, {
     timestamps: true,
     versionKey: false,
-  }
+  },
 );
 
 module.exports = model('Role', roleSchema);
