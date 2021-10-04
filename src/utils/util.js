@@ -1,4 +1,5 @@
 module.exports.isValidEmail = (email) => (new RegExp(/^\S+@\S+\.\S+$/)).test(email);
+module.exports.isValidPassword = (password) => (new RegExp(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[.!@#&()–[{}\]:;',?/*~$^+=<>]).{8,}$/).test(password));
 
 module.exports.convertToLinks = (protocol, host, path, limit, page, totalPages) => {
   const link = {
