@@ -18,7 +18,7 @@ module.exports.getProducts = async (page, limit) => {
 };
 
 module.exports.getProductByName = async (name) => {
-  const product = await Product.findOne({ name });
+  const product = await Product.findOne({ name }).sort('name');
   return product;
 };
 

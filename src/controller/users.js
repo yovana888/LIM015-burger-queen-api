@@ -13,10 +13,10 @@ const { isValidEmail, convertToLinks, isValidPassword } = require('../utils/util
 module.exports = {
   getUsers: async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
-    const { protocol, host } = req.headers;
+    const { host } = req.headers;
     const totalPages = Math.ceil((await getUsersWithPagination(1, 0)).length / limit);
     const users = await getUsersWithPagination(Number(page), Number(limit));
-    const link = convertToLinks(protocol, host, 'users', limit, page, totalPages);
+    const link = convertToLinks(host, 'users', limit, page, totalPages);
     res.set('links', JSON.stringify(link));
     return res.json(users);
   },

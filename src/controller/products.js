@@ -11,10 +11,10 @@ const { convertToLinks } = require('../utils/util');
 module.exports = {
   getProducts: async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
-    const { protocol, host } = req.headers;
+    const { host } = req.headers;
     const totalPages = Math.ceil((await getProducts(1, 0)).length / limit);
     const products = await getProducts(Number(page), Number(limit));
-    const link = convertToLinks(protocol, host, 'products', limit, page, totalPages);
+    const link = convertToLinks(host, 'products', limit, page, totalPages);
     res.set('Link', JSON.stringify(link));
     return res.json(products);
   },
