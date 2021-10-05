@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1633391421403" clover="3.2.0">
-  <project timestamp="1633391421403" name="All files">
+<coverage generated="1633445016516" clover="3.2.0">
+  <project timestamp="1633445016517" name="All files">
     <metrics statements="5" coveredstatements="5" conditionals="11" coveredconditionals="9" methods="0" coveredmethods="0" elements="16" coveredelements="14" complexity="0" loc="5" ncloc="5" packages="1" files="1" classes="1"/>
     <file name="config.js" path="C:\Users\aliss\Desktop\Proyectos\Laboratoria\LIM015-burger-queen-api\src\config.js">
       <metrics statements="5" coveredstatements="5" conditionals="11" coveredconditionals="9" methods="0" coveredmethods="0"/>

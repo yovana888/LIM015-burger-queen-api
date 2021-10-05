@@ -8,12 +8,6 @@ const {
   fetchWithAuth,
 } = process;
 
-// const parseLinkHeader = (string) => string.split(',')
-//   .reduce((memo, item) => {
-//     const [, value, key] = /^<(.*)>;\s+rel="(first|last|prev|next)"/.exec(item.trim());
-//     return { ...memo, [key]: value };
-//   }, {});
-
 describe('GET /users', () => {
   it('should fail with 401 when no auth', () => (
     fetch('/users').then((resp) => expect(resp.status).toBe(401))
@@ -65,7 +59,6 @@ describe('GET /users', () => {
         return resp.json().then((json) => ({ headers: resp.headers, json }));
       })
       .then(({ headers, json }) => {
-        // const linkHeader = parseLinkHeader(headers.get('link'));
         const linkHeader = JSON.parse(headers.get('links'));
         const firstUrlObj = url.parse(linkHeader.first, true);
         const prevUrlObj = url.parse(linkHeader.prev, true);

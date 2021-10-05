@@ -27,7 +27,8 @@ module.exports.generateJWT = (id) => new Promise((resolve) => {
 });
 
 module.exports.getUsersWithPagination = async (page, limit) => {
-  const users = await User.find({}).populate('roles').skip((page - 1) * limit).limit(limit);
+  const users = await User.find({}).sort('email').populate('roles').skip((page - 1) * limit)
+    .limit(limit);
   return users;
 };
 

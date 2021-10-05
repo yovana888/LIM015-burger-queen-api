@@ -7,7 +7,6 @@ module.exports.auth = async (req, res) => {
 
   // si no existe el usuario
   const userFound = await getUserByEmail(email);
-  // console.info(userFound);
   if (!userFound) return res.status(404).json({ message: "User doesn't exists" });
 
   // se comparan las contraseñas

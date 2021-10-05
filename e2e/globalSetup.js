@@ -6,7 +6,6 @@ const kill = require('tree-kill');
 const mongoSetup = require('@shelf/jest-mongodb/setup');
 
 const config = require('../src/config');
-// const { deleteSingle, getUserByIdOrEmail } = require('../src/services/users');
 
 const port = process.env.PORT || 8888;
 const baseUrl = process.env.REMOTE_URL || `http://127.0.0.1:${port}`;
@@ -28,7 +27,6 @@ const __e2e = {
   // in `testObjects` we keep track of objects created during the test run so
   // that we can clean up before exiting.
   // For example: ['users/foo@bar.baz', 'products/xxx', 'orders/yyy']
-  testObjects: ['test@test.test', 'test1@test.test', 'admin1@test.test'],
 };
 
 const fetch = (url, opts = {}) => nodeFetch(`${baseUrl}${url}`, {
@@ -85,14 +83,6 @@ const checkAdminCredentials = () => fetch('/auth', {
     return resp.json();
   })
   .then(({ token }) => Object.assign(__e2e, { adminToken: token }));
-
-// const cleanTestObjects = () => beforeAll(() => {
-//   const { testObjects } = __e2e;
-//   testObjects.forEach((e) => {
-//     const user = getUserByIdOrEmail(e);
-//     deleteSingle(user._id, user.roles._id);
-//   });
-// });
 
 const waitForServerToBeReady = (retries = 10) => new Promise((resolve, reject) => {
   if (!retries) {
@@ -161,4 +151,3 @@ process.fetch = fetch;
 process.fetchWithAuth = fetchWithAuth;
 process.fetchAsAdmin = fetchAsAdmin;
 process.fetchAsTestUser = fetchAsTestUser;
-// process.cleanTestObjects = cleanTestObjects;

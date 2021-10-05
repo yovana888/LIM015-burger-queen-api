@@ -16,7 +16,8 @@ module.exports.createOrder = async (userId, client, products) => {
 };
 
 module.exports.getOrdersDb = async (page, limit) => {
-  const orders = await Order.find({}).populate('products.productId').skip((page - 1) * limit).limit(limit);
+  const orders = await Order.find({}).sort({ dateProcessed: 'desc' }).populate('products.productId').skip((page - 1) * limit)
+    .limit(limit);
   return orders;
 };
 
