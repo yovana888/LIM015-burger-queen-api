@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "main": "src/index.js",
   "license": "MIT",
+  "description": "API REST that serves JSON over HTTP, to be integrated with a hamburger restaurant web application",
   "author": {
     "name": "Alisson Cruz Holguin"
   },
