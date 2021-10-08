@@ -262,7 +262,6 @@ describe('PUT/orders:orderId', () => {
             .expect('Content-Type', /json/)
             .expect(400)
             .then((response) => {
-              console.info(response.body);
               expect(response.body).toEqual({ message: 'Invalid status value' });
               done();
             });
